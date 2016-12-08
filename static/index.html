@@ -1,0 +1,56 @@
+<head>
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+</head>
+<body>
+This are the PD opportunities offered by the CS4All team at NYCDOE.
+<div id="results"></div>
+
+
+<script>
+$.get( "/all", function( data ) {
+    for(i=0;i<data.length;i++){
+        //make the div container
+        var opp = makeOppContainer(data);
+
+        //make elements
+        var provider = document.createElement("h3");
+        var session = document.createElement("h4");
+        //fill elements with data
+        provider.innerText = data[i].provider
+        provider.className = "provider"
+        session.innerText = data[i].session
+        //append to opp
+        opp.appendChild(provider);
+        opp.appendChild(session)
+        //append to results
+        var element = document.getElementById("results");
+        element.appendChild(opp);
+
+        //data[i].column_name
+    }
+});
+
+makeOppContainer(data){
+    var opp = document.createElement("div");
+    opp.id = data[i].opp_id;
+    opp.className = "col-md-10";
+}
+
+makeContentElement(type, content, className, style, parent){
+    var elem = document.createElement(type);
+    elem.innerText = content;
+    elem.className = className;
+    elem.className = style;
+    parent.appendChild(elem);
+}
+
+makeContainerElement(type, style, parent, id=""){
+    var elem = document.createElement(type);
+    elem.className = style;
+    elem.id = id;
+    parent.appendChild(elem);
+}
+
+
+</script>
+</body>
