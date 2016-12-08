@@ -30,26 +30,27 @@ $.get( "/all", function( data ) {
     }
 });
 
-makeOppContainer(data){
+function makeOppContainer(data){
     var opp = document.createElement("div");
     opp.id = data[i].opp_id;
     opp.className = "col-md-10";
+    return opp
 }
 
-makeContentElement(type, content, className, style, parent){
-    var elem = document.createElement(type);
-    elem.innerText = content;
-    elem.className = className;
-    elem.className = style;
-    parent.appendChild(elem);
-}
+// function makeContentElement(type, content, className, style, parent){
+//     var elem = document.createElement(type);
+//     elem.innerText = content;
+//     elem.className = className;
+//     elem.className = style;
+//     parent.appendChild(elem);
+// }
 
-makeContainerElement(type, style, parent, id=""){
-    var elem = document.createElement(type);
-    elem.className = style;
-    elem.id = id;
-    parent.appendChild(elem);
-}
+// function makeContainerElement(type, style, parent, id){
+//     var elem = document.createElement(type);
+//     elem.className = style;
+//     elem.id = id;
+//     parent.appendChild(elem);
+// }
 
 
 </script>
