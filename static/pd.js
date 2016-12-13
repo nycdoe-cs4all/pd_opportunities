@@ -57,7 +57,7 @@ function displayData(data){
         var implement_dl = getDataLabel("implementation", reg_type);
         var sn_dl = getDataLabel("support_narrative", reg_type);
         var comp_dl = getDataLabel("compensation", reg_type);
-        var cafy_dl = getDataLabel("costs_after_first_year", reg_type, "TEALS");
+        var cafy_dl = getDataLabel("costs_after_first_year", reg_type, obj.provider);
         var lang_dl = getDataLabel("language", reg_type);
         var loc_dl = getDataLabel("location_name", reg_type);
         var city_dl = getDataLabel("city", reg_type);
@@ -101,7 +101,7 @@ function displayData(data){
         } else {
             target = makeModalButton(obj.opp_id, button_container);
         }
-        var reg_button = makeRegButton(obj.registration_link, reg_type, button_container);
+        var reg_button = makeRegButton(obj.registration_link, reg_type, button_container, obj.open);
         //make modal container
         var modal_content = makeModalContainer(data, opp, target);
         var modal_header = makeModalHeader(obj.session, modal_content);
@@ -136,11 +136,78 @@ function displayData(data){
         makeContentElement("p", "compensation", comp_dl, capitalizeFirstLetter(obj.compensation), modal_body);
         makeContentElement("p", "costs_after_first_year", cafy_dl, obj.costs_after_first_year, modal_body);
         var footer = makeModalFooter(modal_content);
-        makeRegButton(obj.registration_link, reg_type, footer);
+        makeRegButton(obj.registration_link, reg_type, footer, obj.open);
         makeCloseButton(footer);
         //append to results
         results.appendChild(opp);
     }
+}
+
+//CONTAINER FOR OPPORTUNITY LISTING
+function makeOppContainer(data){
+    var opp = document.createElement("div");
+    opp.id = data.opp_id;
+    // opp.setAttribute("deadline", data.deadline);
+    var className = "item";
+    //add data for filters - pd length, grade, ee, se, subjects, district 
+    className += " " + data.pd_length.toLowerCase();
+    var grade_array = data.grade.split(",");
+    for (grade in grade_array){
+        var grade_text = grade_array[grade].trim().toLowerCase();
+        className += " " + grade_text;
+    }
+    className += " educator_" + data.educator_experience.toLowerCase();
+    className += " student_" + data.student_experience.toLowerCase();
+    var subject_text;
+    if(data.subject_area.toLowerCase().includes('cs only')){
+        subject_text = "cs-only";
+    } else {
+        subject_text = "integrated";
+    }
+    className += " " + subject_text;
+    //FOR LATER WHEN WE ACTUALLY HAVE OFFERINGS THAT MEANINGFULLY INTEGRATE OTHER SUBJECTS
+    // var subject_array = data.subject_area.split(",");
+    // for (subject in subject_array){
+    //     var subject_text = subject_array[subject].trim().toLowerCase().replace(" ", "-");
+    //     className += " " + subject_text;
+    // }
+    var city_array = data.city.split(",");
+    for (city in city_array){
+        var city_text = city_array[city].trim().toLowerCase().replace(" ", "-");
+        className += " " + city_text;
+    }
+    // className += " " + data.district_eligibility.trim().toLowerCase().replace(" ", "-");
+    className += " " + "col-md-10"
+    opp.className = className;
+    return opp
+}
+
+//CONTAINER MAKERS
+
+function makeContentElement(type, className, data_label, content, parent){
+    var elem = document.createElement(type);
+    if(className==="date_time"){
+        content = content.split(",").join("</br>");
+        content = "</br>" + content;
+    }
+    if (data_label===""){
+        elem.innerHTML = content; 
+    } else {
+        elem.innerHTML = "<strong>" + data_label + ": </strong>" + content;
+    } 
+    elem.className = className;
+    parent.appendChild(elem);
+    return elem
+}
+
+function makeContainerElement(type, style, parent, id){
+    var elem = document.createElement(type);
+    elem.className = style;
+    if(id != undefined){
+        elem.id = id;
+    }
+    parent.appendChild(elem);
+    return elem
 }
 
 //MODAL STUFF
@@ -184,68 +251,9 @@ function makeModalHeader(title, parent){
     header.appendChild(close_button);
     var session = document.createElement("h4");
     session.className = "modal-title";
-    session.innerText = title;
+    session.innerHTML = title;
     header.appendChild(session);
     parent.appendChild(header);
-}
-
-//CONTAINER FOR OPPORTUNITY LISTING
-function makeOppContainer(data){
-    var opp = document.createElement("div");
-    opp.id = data.opp_id;
-    // opp.setAttribute("deadline", data.deadline);
-    var className = "item";
-    //add data for filters - pd length, grade, ee, se, subjects, district 
-    className += " " + data.pd_length.toLowerCase();
-    var grade_array = data.grade.split(",");
-    for (grade in grade_array){
-        var grade_text = grade_array[grade].trim().toLowerCase();
-        className += " " + grade_text;
-    }
-    className += " educator_" + data.educator_experience.toLowerCase();
-    className += " student_" + data.student_experience.toLowerCase();
-    var subject_array = data.subject_area.split(",");
-    for (subject in subject_array){
-        var subject_text = subject_array[subject].trim().toLowerCase().replace(" ", "-");
-        className += " " + subject_text;
-    }
-    var city_array = data.city.split(",");
-    for (city in city_array){
-        var city_text = city_array[city].trim().toLowerCase().replace(" ", "-");
-        className += " " + city_text;
-    }
-    // className += " " + data.district_eligibility.trim().toLowerCase().replace(" ", "-");
-    className += " " + "col-md-10"
-    opp.className = className;
-    return opp
-}
-
-//
-
-function makeContentElement(type, className, data_label, content, parent){
-    var elem = document.createElement(type);
-    if(className==="date_time"){
-        content = content.split(",").join("</br>");
-        content = "</br>" + content;
-    }
-    if (data_label===""){
-        elem.innerHTML = content; 
-    } else {
-        elem.innerHTML = "<strong>" + data_label + ": </strong>" + content;
-    } 
-    elem.className = className;
-    parent.appendChild(elem);
-    return elem
-}
-
-function makeContainerElement(type, style, parent, id){
-    var elem = document.createElement(type);
-    elem.className = style;
-    if(id != undefined){
-        elem.id = id;
-    }
-    parent.appendChild(elem);
-    return elem
 }
 
 //ALL BUTTON STUFF
@@ -274,7 +282,7 @@ function makeLinkButton(text, target, parent){
     return ""
 }
 
-function makeRegButton(reg_link, reg_type, parent){
+function makeRegButton(reg_link, reg_type, parent, open){
     var anchor = document.createElement("a");
     anchor.href= reg_link;
     anchor.target = "_blank";
@@ -282,7 +290,20 @@ function makeRegButton(reg_link, reg_type, parent){
     button.className = "btn btn-success";
     button.style.marginLeft = "10px";
     if (reg_type==="Application"){
-        button.innerText = "Apply Now";
+        var open_date = new Date(open);
+        var now = new Date;
+        console.log(open_date);
+        if(open_date.toString() !== "Invalid Date"){
+            var diff = open_date - now;
+            
+            if(diff > 0){
+                button.innerText = "Intent to Apply";
+            } else {
+                button.innerText = "Apply Now";
+            }
+        } else {
+            button.innerText = "Apply Now";
+        }
     } else {
         button.innerText = "Register Now";
     }
@@ -299,9 +320,12 @@ function makeCloseButton(footer){
     footer.appendChild(close_button);
 }
 
+//HELPER FUNCTIONS - data labels, capitalization, hyperlinking, stubs, sorting, displaying combofilters
+
 function getDataLabel(className, reg_type, teals){
-    var data_label = data_labels[className]
-    if(teals === undefined){
+    var data_label;
+    if(teals !== "TEALS"){
+        data_label = data_labels[className];
         if (typeof data_label != "string"){
             data_label = data_label[reg_type]
         }
