@@ -292,7 +292,6 @@ function makeRegButton(reg_link, reg_type, parent, open){
     if (reg_type==="Application"){
         var open_date = new Date(open);
         var now = new Date;
-        console.log(open_date);
         if(open_date.toString() !== "Invalid Date"){
             var diff = open_date - now;
             

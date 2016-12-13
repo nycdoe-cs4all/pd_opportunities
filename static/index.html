@@ -85,6 +85,7 @@
 var $container;
 var filters = {};
 var qsRegex;
+var filtering = false
 $('#spinner').show();
 $.get( "/all", function( data ) {
     $('#spinner').hide();
@@ -103,17 +104,17 @@ $.get( "/all", function( data ) {
     $('#options').on( 'change', function( jQEvent ) {
         var $checkbox = $( jQEvent.target );
         manageCheckbox( $checkbox );
-
         var comboFilter = getComboFilter( filters );
-
         $container.isotope({ filter: comboFilter });
-
         var comboFilter_display = displayComboFilter(comboFilter);
         $filterDisplay.text( comboFilter_display );
+        filtering = true;
+        $('#search-status').text("Search disabled while filtering, try clicking 'Clear Filters'.");
     });
 
     $(".isotope-reset").click(function(){
         resetFilters();
+        $('#search-status').text("Search is enabled!");
         // $('input:checkbox').removeAttr('checked');
     });
 
@@ -125,8 +126,14 @@ $.get( "/all", function( data ) {
     var $quicksearch = $('.quicksearch').keyup( debounce( function() {
         var search_value = $quicksearch.val().trim()
         qsRegex = new RegExp( search_value, 'gi' );
+        // var comboFilter = getComboFilter( filters );
+        // $container.isotope( {filter: comboFilter} );
         $container.isotope();
-        $('#search-status').text("Search Complete");
+        if(search_value && filtering === false){
+            $('#search-status').text("Search Complete");
+        } else if (search_value && filtering === true){
+            $('#search-status').text("Search disabled while filtering, try clicking 'Clear Filters'.");
+        }
     }, 200 ) );
 
     // debounce so filtering doesn't happen every millisecond

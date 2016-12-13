@@ -86,8 +86,8 @@ function manageCheckbox( $checkbox ) {
 }
 
 function resetFilters(){
-  console.log("hello");
   $('#filter-display').text( "" );
+  filters = {};
   $container.isotope({
     filter: function() {
         return qsRegex ? $(this).text().match( qsRegex ) : true;
@@ -95,9 +95,7 @@ function resetFilters(){
   });
   // console.log("hello");
   $('.option-set').children().each( function(){
-    console.log(this.type);
     if(this.type==="checkbox"){
-      console.log(this.value);
       if(this.value===""){
         this.checked = true;
       } else {
