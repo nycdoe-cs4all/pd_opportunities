@@ -4,18 +4,19 @@ from oauth2client.service_account import ServiceAccountCredentials
 from httplib2 import Http
 from apiclient.discovery import build
 
-try:
-    import argparse
-    flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-except ImportError:
-    flags = None
+
+# try:
+#     import argparse
+#     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
+# except ImportError:
+#     flags = None
 
 
 
 def get_credentials():
-    scopes = ['https://www.googleapis.com/auth/sqlservice.admin']
+    scopes = ['https://www.googleapis.com/auth/spreadsheets.readonly']
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
-    '/var/www/pd_opportunities/app/PD Opportunities-8a70856a56d2.json', scopes)
+    'PD-Opportunities-be4d7d250c01.json', scopes)
     return credentials
 
 def retrieve_data():
@@ -26,14 +27,14 @@ def retrieve_data():
     https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
     """
     credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
+    http = credentials.authorize(Http())
     discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
                     'version=v4')
     service = build('sheets', 'v4', http=http,
                               discoveryServiceUrl=discoveryUrl)
 
     spreadsheetId = '1wSAg1nrbBXS80o6fHoJFWinLalvVnS9gQqQCexMn65k'
-    rangeName = 'Data!A1:W'
+    rangeName = 'Data!A1:AB'
     result = service.spreadsheets().values().get(
         spreadsheetId=spreadsheetId, range=rangeName).execute()
     data = result.get('values', [])
@@ -47,7 +48,10 @@ def retrieve_data():
             provider_data = {}
             for k in range(0,len(keys)):
                 key = keys[k]
-                provider_data[key]=row[k]
+                try:
+                    provider_data[key]=row[k]
+                except:
+                    provider_data[key]=""
             json_data.append(provider_data)
         return json_data
 

@@ -1,57 +1,156 @@
 <head>
 <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Isotope -->
+<script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+<!-- custom JS -->
+<script src="./pd.js"></script>
+<script src="./filters.js"></script>
 </head>
 <body>
-This are the PD opportunities offered by the CS4All team at NYCDOE.
-<div id="results"></div>
-
+    <div class="container">
+        <div class="col-md-2">
+            <div id="options" class="well">
+              <h3>Filters</h3>
+              <p class="isotope-reset" style="text-decoration: underline;">Clear Filters</pd>
+              <div class="option-set" data-group="grade">
+                <h4>Grade</h4>
+                <input type="checkbox" value="" id="grade-all" class="all" checked /><label for="grade-all"> All grades</label></br>
+                <input type="checkbox" value=".k-2" id="k-2" /><label for="k-2"> K-2</label></br>
+                <input type="checkbox" value=".3-5" id="3-5" /><label for="3-5"> 3-5</label></br>
+                <input type="checkbox" value=".6-8" id="6-8" /><label for="6-8"> 6-8</label></br>
+                <input type="checkbox" value=".9-12" id="9-12" /><label for="9-12"> 9-12</label></br>
+                <hr style="border: 1px solid #034CA8; margin: 0px; padding: 0px;" />​
+              </div>
+              <div class="option-set" data-group="subject_area">
+                <h4>Subject Areas</h4>
+                <input type="checkbox" value="" id="subject_area-all" class="all" checked /><label for="subject_area-all"> All subjects</label></br>
+                <input type="checkbox" value=".math" id="math" /><label for="math"> Math</label></br>
+                <input type="checkbox" value=".ela" id="ela" /><label for="ela"> ELA</label></br>
+                <input type="checkbox" value=".social-studies" id="social-studies" /><label for="social-studies"> Social Studies</label></br>
+                <input type="checkbox" value=".science" id="science" /><label for="science"> Science</label></br>
+                <input type="checkbox" value=".technology" id="technology" /><label for="technology"> Technology</label></br>
+                <input type="checkbox" value=".art" id="art" /><label for="art"> Art</label></br>
+                <input type="checkbox" value=".music" id="music" /><label for="music"> Music</label></br>
+                <input type="checkbox" value=".cs-only" id="cs-only" /><label for="cs-only"> CS only</label></br>
+                <hr style="border: 1px solid #034CA8; margin: 0px; padding: 0px;" />​
+              </div>
+              <div class="option-set" data-group="borough">
+                <h4>Borough</h4>
+                <input type="checkbox" value="" id="borough-all" class="all" checked hidden/>
+                <input type="checkbox" value=".bronx" id="bronx" /><label for="bronx"> Bronx</label></br>
+                <input type="checkbox" value=".brooklyn" id="brooklyn" /><label for="brooklyn"> Brooklyn</label></br>
+                <input type="checkbox" value=".manhattan" id="manhattan" /><label for="manhattan"> Manhattan</label></br>
+                <input type="checkbox" value=".queens" id="queens" /><label for="queens"> Queens</label></br>
+                <input type="checkbox" value=".staten-island" id="staten-island" /><label for="staten-island"> Staten Island</label></br>
+                <hr style="border: 1px solid #034CA8; margin: 0px; padding: 0px;" />​
+              </div>
+              <div class="option-set" data-group="pd_length">
+                <h4>Length of PD</h4>
+                <input hidden type="checkbox" value="" id="pd_length-all" class="all" checked /><label for="pd_length-all"> </label></br>
+                <input type="checkbox" value=".one-day" id="one-day" /><label for="one-day">One-day</label></br>
+                <input type="checkbox" value=".multi-day" id="multi-day" /><label for="multi-day">Multi-day</label></br>
+                <input type="checkbox" value=".long-term" id="long-term" /><label for="long-term">Long-term</label>
+                <hr style="border: 1px solid #034CA8; margin: 0px; padding: 0px;" />​
+              </div>
+              <div class="option-set" data-group="educator_experience">
+                <h4>Educator CS Experience</h4>
+                <input hidden type="checkbox" value="" id="educator_experience-all" class="all" checked /><label for="educator_experience-all"> </label></br>
+                <input type="checkbox" value=".educator_beginner" id="educator_beginner" /><label for="educator_beginner">Beginner</label></br>
+                <input type="checkbox" value=".educator_comfortable" id="educator_comfortable" /><label for="educator_comfortable">Comfortable</label></br>
+                <hr style="border: 1px solid #034CA8; margin: 0px; padding: 0px;" />​
+              </div>
+              <div class="option-set" data-group="student_experience">
+                <h4>Student CS Experience</h4>
+                <input hidden type="checkbox" value="" id="student_experience-all" class="all" checked /><label for="student_experience-all"> </label></br>
+                <input type="checkbox" value=".student_beginner" id="student_beginner" /><label for="student_beginner">Beginner</label></br>
+                <input type="checkbox" value=".student_comfortable" id="student_comfortable" /><label for="student_comfortable">Comfortable</label></br>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <p><input type="text" class="quicksearch" placeholder="Search" /><span id="search-status" style="padding-left: 5px"></span></p>
+            
+            <strong>Filters Chosen</strong><p id="filter-display"></p>
+            <div id="spinner" class="spinner" style="display:none;">
+                <img id="img-spinner" src="magnify.gif" alt="Loading"/>
+            </div>
+            <div id="container"></div>
+        </div>
+    </div>
 
 <script>
+var $container;
+var filters = {};
+var qsRegex;
+$('#spinner').show();
 $.get( "/all", function( data ) {
-    for(i=0;i<data.length;i++){
-        //make the div container
-        var opp = makeOppContainer(data);
+    $('#spinner').hide();
+    displayData(data);
 
-        //make elements
-        var provider = document.createElement("h3");
-        var session = document.createElement("h4");
-        //fill elements with data
-        provider.innerText = data[i].provider
-        provider.className = "provider"
-        session.innerText = data[i].session
-        //append to opp
-        opp.appendChild(provider);
-        opp.appendChild(session)
-        //append to results
-        var element = document.getElementById("results");
-        element.appendChild(opp);
+    $container = $('#container');
 
-        //data[i].column_name
+    var $filterDisplay = $('#filter-display');
+
+    $container.isotope({
+        filter: function() {
+            return qsRegex ? $(this).text().match( qsRegex ) : true;
+        }
+    });
+    // do stuff when checkbox change
+    $('#options').on( 'change', function( jQEvent ) {
+        var $checkbox = $( jQEvent.target );
+        manageCheckbox( $checkbox );
+
+        var comboFilter = getComboFilter( filters );
+
+        $container.isotope({ filter: comboFilter });
+
+        var comboFilter_display = displayComboFilter(comboFilter);
+        $filterDisplay.text( comboFilter_display );
+    });
+
+    $(".isotope-reset").click(function(){
+        resetFilters();
+        // $('input:checkbox').removeAttr('checked');
+    });
+
+    $('.quicksearch').keydown( function(){
+        $('#search-status').text("");
+    })
+
+    // use value of search field to filter
+    var $quicksearch = $('.quicksearch').keyup( debounce( function() {
+        var search_value = $quicksearch.val().trim()
+        qsRegex = new RegExp( search_value, 'gi' );
+        $container.isotope();
+        $('#search-status').text("Search Complete");
+    }, 200 ) );
+
+    // debounce so filtering doesn't happen every millisecond
+    function debounce( fn, threshold ) {
+      var timeout;
+      return function debounced() {
+        if ( timeout ) {
+          clearTimeout( timeout );
+        }
+        function delayed() {
+          fn();
+          timeout = null;
+        }
+        timeout = setTimeout( delayed, threshold || 100 );
+      }
     }
 });
 
-function makeOppContainer(data){
-    var opp = document.createElement("div");
-    opp.id = data[i].opp_id;
-    opp.className = "col-md-10";
-    return opp
-}
-
-// function makeContentElement(type, content, className, style, parent){
-//     var elem = document.createElement(type);
-//     elem.innerText = content;
-//     elem.className = className;
-//     elem.className = style;
-//     parent.appendChild(elem);
-// }
-
-// function makeContainerElement(type, style, parent, id){
-//     var elem = document.createElement(type);
-//     elem.className = style;
-//     elem.id = id;
-//     parent.appendChild(elem);
-// }
-
-
 </script>
+
 </body>
