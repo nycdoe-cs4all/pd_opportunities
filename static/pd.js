@@ -66,11 +66,12 @@ function displayData(data){
         opp.appendChild(hoz_rule);
         if(obj.pd_length.toLowerCase()==="one-day"){
             var date = obj.date_time.split(" ")[0];
-            var date_obj = new Date(date);
+            var date_obj = new Date(cleanDate(date));
             mlist = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
             var month = mlist[date_obj.getMonth()];
             var day = date_obj.getDate();
             var year = date_obj.getFullYear();
+            console.log(date_obj);
             var session_with_date = obj.session + " - " + month + " " + day + ", " + year;
 
             makeContentElement("h3", "session", "", session_with_date, opp);
@@ -259,14 +260,19 @@ function makeModalHeader(title, parent){
 //ALL BUTTON STUFF
 
 function makeModalButton(opp_id, container){
-    var button = document.createElement("button");
-    button.className = "btn btn-info";
-    button.setAttribute("data-toggle", "modal");
-    // button.style.marginLeft = "5px";
+    var anchor = document.createElement("a");
+    anchor.className = "btn btn-info"
     var readmore_target = "#readmore" + opp_id;
-    button.setAttribute("data-target", readmore_target);
-    button.innerText = "Learn More";
-    container.appendChild(button);
+    anchor.href = readmore_target;
+    anchor.setAttribute("data-toggle", "modal");
+    anchor.innerHTML = "Learn More";
+    // var button = document.createElement("button");
+    // button.className = "btn btn-info";
+    // button.setAttribute("data-toggle", "modal");
+    // button.style.marginLeft = "5px";    
+    // button.setAttribute("data-target", readmore_target);
+    // button.innerText = "Learn More";
+    container.appendChild(anchor);
     return readmore_target.substring(1);
 }
 
@@ -274,10 +280,11 @@ function makeLinkButton(text, target, parent){
     var anchor = document.createElement("a");
     anchor.href= target;
     anchor.target = "_blank";
-    var button = document.createElement("button");
-    button.className = "btn btn-info";
-    button.innerText = text;
-    anchor.appendChild(button);
+    anchor.className = "btn btn-info";
+    // var button = document.createElement("button");
+    // button.className = "btn btn-info";
+    anchor.innerHTML = text;
+    // anchor.appendChild(button);
     parent.appendChild(anchor);
     return ""
 }
@@ -286,9 +293,11 @@ function makeRegButton(reg_link, reg_type, parent, open){
     var anchor = document.createElement("a");
     anchor.href= reg_link;
     anchor.target = "_blank";
-    var button = document.createElement("button");
-    button.className = "btn btn-success";
-    button.style.marginLeft = "10px";
+    anchor.className = "btn btn-success"
+    anchor.style.marginLeft = "10px"
+    // var button = document.createElement("button");
+    // button.className = "btn btn-success";
+    // button.style.marginLeft = "10px";
     if (reg_type==="Application"){
         var open_date = new Date(open);
         var now = new Date;
@@ -296,27 +305,27 @@ function makeRegButton(reg_link, reg_type, parent, open){
             var diff = open_date - now;
             
             if(diff > 0){
-                button.innerText = "Intent to Apply";
+                anchor.innerHTML = "Intent to Apply";
             } else {
-                button.innerText = "Apply Now";
+                anchor.innerHTML = "Apply Now";
             }
         } else {
-            button.innerText = "Apply Now";
+            anchor.innerHTML = "Apply Now";
         }
     } else {
-        button.innerText = "Register Now";
+        anchor.innerHTML = "Register Now";
     }
-    anchor.appendChild(button);
+    // anchor.appendChild(button);
     parent.appendChild(anchor);
 }
 
 function makeCloseButton(footer){
-    var close_button = document.createElement("button");
-    close_button.className = "btn btn-default"
-    close_button.setAttribute("data-dismiss", "modal");
-    close_button.style.marginLeft = "10px";
-    close_button.innerText="Close";
-    footer.appendChild(close_button);
+    var close_anchor = document.createElement("a");
+    close_anchor.className = "btn btn-default"
+    close_anchor.setAttribute("data-dismiss", "modal");
+    close_anchor.style.marginLeft = "10px";
+    close_anchor.innerHTML="Close";
+    footer.appendChild(close_anchor);
 }
 
 //HELPER FUNCTIONS - data labels, capitalization, hyperlinking, stubs, sorting, displaying combofilters
@@ -389,4 +398,44 @@ function displayComboFilter(comboFilter){
         human_comboFilter += capitalizeFirstLetter(filters[f].trim()) + " ";
     }
     return human_comboFilter;
+}
+
+function cleanDate( strDate ){
+
+    // Return the cleaned date.
+    return(
+        strDate.replace(
+
+            // This regular expression will search for a slash
+            // followed by EXACTLY two digits at the end of
+            // this date string. The two digits are being
+            // grouped together for future referencing.
+            new RegExp( "/(\\d{2})$", "" ),
+
+            // We are going to pass the match made by the
+            // regular expression off to this function literal.
+            // Our arguments are as follows:
+            // $0 : The entire match found.
+            // $1 : The first group within the match.
+            function( $0, $1 ){
+
+                // Check to see if our first group begins with
+                // a zero or a one. If so, replace with 20 else
+                // replace with 19.
+                if ($1.match( new RegExp( "^[01]{1}", "" ) )){
+
+                    // Replace with 20.
+                    return( "/20" + $1 );
+
+                } else {
+
+                    // Replace with 19.
+                    return( "/19" + $1 );
+
+                }
+
+            }
+            )
+        );
+
 }
