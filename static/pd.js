@@ -7,7 +7,7 @@ var data_labels = {
     "deadline": { "Application": "Apply by", "Registration": "Register by"},
     "date_time": "Dates of all Required Sessions",
     "provider": "Provider",
-    "district_eligibility": "Districts Eligible",
+    "district_eligibility": "Districtpa Eligibility",
     "class_technology": "Hardware Requirements",
     "software": "Software Requirements",
     "compensation": "Compensation for PD time",
@@ -26,6 +26,12 @@ var data_labels = {
 //can all this be put into a js file that is served by the static wordpress server or by the flask app?
 
 function displayData(data){
+     if (!String.prototype.includes) {
+     String.prototype.includes = function() {
+         'use strict';
+         return String.prototype.indexOf.apply(this, arguments) !== -1;
+         };
+     }
     var results = document.getElementById("container");
     results.innerHTML="";
     sorted_ids = sortData(data);
@@ -71,7 +77,6 @@ function displayData(data){
             var month = mlist[date_obj.getMonth()];
             var day = date_obj.getDate();
             var year = date_obj.getFullYear();
-            console.log(date_obj);
             var session_with_date = obj.session + " - " + month + " " + day + ", " + year;
 
             makeContentElement("h3", "session", "", session_with_date, opp);
@@ -375,7 +380,9 @@ function sortData(data){
         if(isNaN(time_left)){
             time_left = 100000000000;
         }
-        sorted_ids.push([data[d].opp_id, time_left]);
+        if(time_left>0){
+            sorted_ids.push([data[d].opp_id, time_left]);
+        }
     }
     sorted_ids.sort(function(a,b){
         return a[1] - b[1];
@@ -437,5 +444,4 @@ function cleanDate( strDate ){
             }
             )
         );
-
 }
