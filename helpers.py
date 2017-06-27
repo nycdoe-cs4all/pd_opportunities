@@ -19,7 +19,7 @@ def get_credentials():
     'PD-Opportunities-be4d7d250c01.json', scopes)
     return credentials
 
-def retrieve_data():
+def retrieve_data(spreadsheetId, rangeName):
     """Shows basic usage of the Sheets API.
 
     Creates a Sheets API service object and prints the names and majors of
@@ -32,9 +32,6 @@ def retrieve_data():
                     'version=v4')
     service = build('sheets', 'v4', http=http,
                               discoveryServiceUrl=discoveryUrl)
-
-    spreadsheetId = '1wSAg1nrbBXS80o6fHoJFWinLalvVnS9gQqQCexMn65k'
-    rangeName = 'Data!A1:AB'
     result = service.spreadsheets().values().get(
         spreadsheetId=spreadsheetId, range=rangeName).execute()
     data = result.get('values', [])
