@@ -31,7 +31,7 @@ def glossary():
             if (x['Term'] == reqTerm):
                 resp = Response(response=x['Definition'], status=200, mimetype="text/plain")
                 foundWord = 1 #set flag
-                continue #if the word was found, exit the loop
+                break #if the word was found, exit the loop
         if foundWord == 0:
             #if the word wasn't found, return an error message
             resp = Response(response='Could not find term in glossary', status=200, mimetype="text/plain")
