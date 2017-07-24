@@ -2,9 +2,11 @@ from __future__ import print_function
 from flask import Flask, Response
 from flask import request
 from helpers import retrieve_data
+from flask_cors import CORS
 import json
 
 app = Flask(__name__, static_url_path='')
+CORS(app)
 app.config['DEBUG'] = True
 
 @app.route('/')
