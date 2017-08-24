@@ -40,6 +40,7 @@ function displayData(data){
         for(var i=0;i<data.length;i++){
             if (data[i].opp_id === sorted_ids[d][0]){
                 obj = data[i];
+                obj.time_left = sorted_ids[d][1];
             }  
         }
         //make the opp container
@@ -70,6 +71,11 @@ function displayData(data){
         //make elements
         var hoz_rule = document.createElement("hr");
         opp.appendChild(hoz_rule);
+        //CHECKING IF SESSION IN THE PAST
+        if(obj.time_left<0){
+            obj.session = "[CLOSED] " + obj.session
+        }
+        //CHECKING TO SEE IF ONE-DAY or MULTI-DAY in order to add date to session name
         if(obj.pd_length.toLowerCase()==="one-day"){
             var date = obj.date_time.split(" ")[0];
             var date_obj = new Date(cleanDate(date));
@@ -78,7 +84,6 @@ function displayData(data){
             var day = date_obj.getDate();
             var year = date_obj.getFullYear();
             var session_with_date = obj.session + " - " + month + " " + day + ", " + year;
-
             makeContentElement("h3", "session", "", session_with_date, opp);
         } else {
             makeContentElement("h3", "session", "", obj.session, opp);
@@ -142,17 +147,24 @@ function displayData(data){
         makeContentElement("p", "compensation", comp_dl, capitalizeFirstLetter(obj.compensation), modal_body);
         makeContentElement("p", "costs_after_first_year", cafy_dl, obj.costs_after_first_year, modal_body);
         var footer = makeModalFooter(modal_content);
-        makeRegButton(obj.registration_link, reg_type, footer, obj.open);
+        makeRegButton(obj.registration_link, reg_type, footer, obj.open, obj.time_left);
         makeCloseButton(footer);
         //append to results
         results.appendChild(opp);
     }
 }
 
+function displayOldData(){
+
+}
+
 //CONTAINER FOR OPPORTUNITY LISTING
 function makeOppContainer(data){
     var opp = document.createElement("div");
     opp.id = data.opp_id;
+    if(data.time_left<0){
+        opp.style.backgroundColor = "gray";
+    }
     // opp.setAttribute("deadline", data.deadline);
     var className = "item";
     //add data for filters - pd length, grade, ee, se, subjects, district 
@@ -294,34 +306,36 @@ function makeLinkButton(text, target, parent){
     return ""
 }
 
-function makeRegButton(reg_link, reg_type, parent, open){
-    var anchor = document.createElement("a");
-    anchor.href= reg_link;
-    anchor.target = "_blank";
-    anchor.className = "btn btn-success"
-    anchor.style.marginLeft = "10px"
-    // var button = document.createElement("button");
-    // button.className = "btn btn-success";
-    // button.style.marginLeft = "10px";
-    if (reg_type==="Application"){
-        var open_date = new Date(open);
-        var now = new Date;
-        if(open_date.toString() !== "Invalid Date"){
-            var diff = open_date - now;
-            
-            if(diff > 0){
-                anchor.innerHTML = "Intent to Apply";
+function makeRegButton(reg_link, reg_type, parent, open, time_left){
+    if(time_left>=0){
+        var anchor = document.createElement("a");
+        anchor.href= reg_link;
+        anchor.target = "_blank";
+        anchor.className = "btn btn-success"
+        anchor.style.marginLeft = "10px"
+        // var button = document.createElement("button");
+        // button.className = "btn btn-success";
+        // button.style.marginLeft = "10px";
+        if (reg_type==="Application"){
+            var open_date = new Date(open);
+            var now = new Date;
+            if(open_date.toString() !== "Invalid Date"){
+                var diff = open_date - now;
+                
+                if(diff > 0){
+                    anchor.innerHTML = "Intent to Apply";
+                } else {
+                    anchor.innerHTML = "Apply Now";
+                }
             } else {
                 anchor.innerHTML = "Apply Now";
             }
         } else {
-            anchor.innerHTML = "Apply Now";
+            anchor.innerHTML = "Register Now";
         }
-    } else {
-        anchor.innerHTML = "Register Now";
+        // anchor.appendChild(button);
+        parent.appendChild(anchor);
     }
-    // anchor.appendChild(button);
-    parent.appendChild(anchor);
 }
 
 function makeCloseButton(footer){
@@ -373,21 +387,29 @@ function capitalizeFirstLetter(string) {
 
 function sortData(data){
     var sorted_ids = [];
+    var sorted_old_ids = [];
     for (d in data){
         var deadline = new Date(data[d].deadline);
         var now = new Date;
+        now.setHours(0,0,0,0);
         var time_left = deadline - now;
         if(isNaN(time_left)){
             time_left = 100000000000;
         }
-        if(time_left>0){
+        if(time_left>=0){
             sorted_ids.push([data[d].opp_id, time_left]);
+        } else {
+            sorted_old_ids.push([data[d].opp_id, time_left]);
         }
     }
     sorted_ids.sort(function(a,b){
         return a[1] - b[1];
     });
-    return sorted_ids
+    sorted_old_ids.sort(function(a,b){
+        return a[1] - b[1];
+    });
+    var ids = sorted_ids.concat(sorted_old_ids);
+    return ids
 }
 
 function displayComboFilter(comboFilter){
